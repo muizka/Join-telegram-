@@ -67,6 +67,24 @@
     color: #fff; font-size: .75rem; font-weight: 700;
     padding: 6px 12px; border-radius: 999px;
   }
+
+  /* Foto */
+  .thumb {
+    width: 100%; aspect-ratio: 16/9; object-fit: cover;
+    border-radius: 14px; margin-bottom: 16px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.05);
+  }
+  .thumb-duo {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    margin-bottom: 16px;
+  }
+  .thumb-duo img {
+    width: 100%; aspect-ratio: 1/1; object-fit: cover;
+    border-radius: 12px; border: 1px solid var(--border);
+    background: rgba(255,255,255,.05);
+  }
+
   .card h2 { font-size: 1.25rem; margin-bottom: 6px; }
   .card .desc { color: var(--muted); font-size: .9rem; margin-bottom: 18px; }
   .old-price {
@@ -102,10 +120,11 @@
     <div class="grid">
       <!-- Paket 1 -->
       <div class="card">
+        <img class="thumb" id="foto1" alt="Grup Telegram 1">
         <h2>Grup Telegram 1</h2>
         <p class="desc">Akses penuh ke Grup 1</p>
         <div class="old-price">&nbsp;</div>
-        <div class="price" id="price1">Rp 10.000 <small>/ sekali bayar</small></div>
+        <div class="price" id="price1"></div>
         <ul>
           <li>Akses Grup Telegram 1</li>
           <li>Update konten rutin</li>
@@ -116,10 +135,11 @@
 
       <!-- Paket 2 -->
       <div class="card">
+        <img class="thumb" id="foto2" alt="Grup Telegram 2">
         <h2>Grup Telegram 2</h2>
         <p class="desc">Akses penuh ke Grup 2</p>
         <div class="old-price">&nbsp;</div>
-        <div class="price" id="price2">Rp 10.000 <small>/ sekali bayar</small></div>
+        <div class="price" id="price2"></div>
         <ul>
           <li>Akses Grup Telegram 2</li>
           <li>Update konten rutin</li>
@@ -130,14 +150,18 @@
 
       <!-- Paket 3 -->
       <div class="card best">
-        <span class="badge">HEMAT 10%</span>
+        <span class="badge" id="badge3"></span>
+        <div class="thumb-duo">
+          <img id="foto3a" alt="Grup 1">
+          <img id="foto3b" alt="Grup 2">
+        </div>
         <h2>Grup 1 + Grup 2</h2>
         <p class="desc">Paket gabungan, lebih hemat</p>
         <div class="old-price" id="oldPrice3"></div>
         <div class="price" id="price3"></div>
         <ul>
           <li>Akses Grup Telegram 1 &amp; 2</li>
-          <li>Diskon 10% dari total harga</li>
+          <li id="diskonText"></li>
           <li>Prioritas dilayani admin</li>
         </ul>
         <a class="btn" id="btn3" target="_blank">Join Paket Gabungan</a>
@@ -149,28 +173,45 @@
 
 <script>
   // ====== PENGATURAN ======
-  const ADMIN = "VilanAccess";   // username Telegram admin (tanpa @)
+  const ADMIN  = "CivilanA";   // username Telegram admin (tanpa @)
   const HARGA_1 = 10000;
   const HARGA_2 = 10000;
-  const DISKON = 0.10;              // 2%
+  const DISKON  = 0.10;        // 10% -> total jadi Rp 18.000
+
+  // Link foto (harus link langsung ke gambar: .jpg / .png / .webp)
+  const FOTO_1 = "https://ibb.co.com/j9YMCQHg";
+  const FOTO_2 = "https://ibb.co.com/XrCR9cXG";
   // ========================
 
   const rupiah = n => "Rp " + n.toLocaleString("id-ID");
+  const satuan = ' <small>/ sekali bayar</small>';
 
   const total = HARGA_1 + HARGA_2;
   const hargaDiskon = Math.round(total * (1 - DISKON));
+  const persen = Math.round(DISKON * 100);
 
+  // Harga
+  document.getElementById("price1").innerHTML = rupiah(HARGA_1) + satuan;
+  document.getElementById("price2").innerHTML = rupiah(HARGA_2) + satuan;
   document.getElementById("oldPrice3").textContent = rupiah(total);
-  document.getElementById("price3").innerHTML =
-    rupiah(hargaDiskon) + ' <small>/ sekali bayar</small>';
+  document.getElementById("price3").innerHTML = rupiah(hargaDiskon) + satuan;
+  document.getElementById("badge3").textContent = "HEMAT " + persen + "%";
+  document.getElementById("diskonText").textContent =
+    "Diskon " + persen + "% dari total harga";
 
+  // Foto
+  document.getElementById("foto1").src  = FOTO_1;
+  document.getElementById("foto2").src  = FOTO_2;
+  document.getElementById("foto3a").src = FOTO_1;
+  document.getElementById("foto3b").src = FOTO_2;
+
+  // Tombol ke Telegram admin
   function link(paket, harga) {
     const pesan = encodeURIComponent(
       `Halo admin, saya mau beli ${paket} seharga ${rupiah(harga)}.`
     );
     return `https://t.me/${ADMIN}?text=${pesan}`;
   }
-
   document.getElementById("btn1").href = link("Join Grup Telegram 1", HARGA_1);
   document.getElementById("btn2").href = link("Join Grup Telegram 2", HARGA_2);
   document.getElementById("btn3").href = link("Paket Gabungan Grup 1 + 2", hargaDiskon);
