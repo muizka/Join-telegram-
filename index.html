@@ -178,9 +178,9 @@
   const HARGA_2 = 10000;
   const DISKON  = 0.10;        // 10% -> total jadi Rp 18.000
 
-  // Link foto (harus link langsung ke gambar: .jpg / .png / .webp)
-  const FOTO_1 = "https://ibb.co.com/j9YMCQHg";
-  const FOTO_2 = "https://ibb.co.com/XrCR9cXG";
+  // Link foto (link langsung ke gambar)
+  const FOTO_1 = "https://i.ibb.co.com/sp4wTNty/Screenshot-20261107-074424.jpg";
+  const FOTO_2 = "https://i.ibb.co.com/kVKtWjmQ/foto-anak-perempuan-cantik-untuk-foto-profil.jpg";
   // ========================
 
   const rupiah = n => "Rp " + n.toLocaleString("id-ID");
@@ -204,6 +204,12 @@
   document.getElementById("foto2").src  = FOTO_2;
   document.getElementById("foto3a").src = FOTO_1;
   document.getElementById("foto3b").src = FOTO_2;
+
+  // Sembunyikan foto yang gagal dimuat
+  ["foto1", "foto2", "foto3a", "foto3b"].forEach(id => {
+    const img = document.getElementById(id);
+    img.onerror = () => { img.style.display = "none"; };
+  });
 
   // Tombol ke Telegram admin
   function link(paket, harga) {
